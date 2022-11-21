@@ -1,0 +1,148 @@
+Chit 1:
+1. select Cname, Acc_Type, Amount from Customer c, Account a where c.C_Id = a.C_id and Acc_Type = "Saving";
+
+2. select * from Customer natural join Account;
+   select * from Customer c left join Account a on c.C_Id = a.C_Id;
+   select * from Customer c right join Account a on c.C_Id = a.C_Id;
+
+3. select * from Customer where City = (select City from Customer where Cname = "Pooja");
+
+4. select * from Account where Amount < (select avg(Amount) from Account);
+
+5. select C_Id from Account where Amount = (select max(Amount) from Account);
+
+6. select Acc_Type, min(Amount) from Account group by Acc_Type;
+
+7. select Amount from Account where Amount > (select min(Amount) from Account where Acc_Type = "Saving");
+
+Chit 12:
+create table account(acc_no int primary key, branch_name varchar(20) not null, balance int not null, check(balance >= 0));
+
+create table branch(branch_name varchar(20) not null, branch_city varchar(20) not null, assets int not null check(assets >= 0));
+
+create table customer(cust_name varchar(20) not null, cust_street int not null, cust_city varchar(20) not null);
+
+create table depositor(cust_name varchar(20) not null, acc_no int, foreign key (acc_no) references account(acc_no));
+
+create table loan(loan_no int primary key, branch_name varchar(20) not null, amount int not null, check(amount >= 0));
+
+create table borrower(cust_name varchar(20) not null, loan_no int, foreign key (loan_no) references loan(loan_no) on delete cascade);
+
+1. select distinct branch_name from loan;
+
+2. select loan_no from loan where branch_name = 'Akurdi' and amount > 12000;
+
+3. select cust_name, loan.loan_no, amount from loan inner join borrower on loan.loan_no = borrower.loan_no;
+
+4. select cust_name from loan l, borrower b where l.loan_no = b.loan_no and branch_name = 'Akurdi' order by cust_name;
+
+5. select cust_name from account a, depositor d where a.acc_no = d.acc_no union select cust_name from loan l, borrower b where l.loan_no = b.loan_no;
+
+6. select avg(balance) from account where branch_name = 'Akurdi';
+
+7. select branch_name, avg(balance) from account group by branch_name;
+
+8. select branch_name, count(*) from depositor d, account a where a.acc_no = d.acc_no group by branch_name;
+
+9. select branch_name, avg(balance) from account group by branch_name having avg(balance) > 12000;
+
+10. select count(*) from customer;
+
+11. delete from loan where amount between 1300 and 1500;
+
+Chit 13:
+1. create table jobs(job_id int primary key, job_desc varchar(20));
+
+2. create table employee(employee_id int primary key, first_name varchar(20), last_name varchar(20), job_id int, salary int, 
+   foreign key (job_id) references jobs(job_id) on delete no action on update no action);
+
+Try some update and delete queries
+
+Chit 17:
+1. select book.book_id, title, publisher_name, author_name, branch_name, no_of_copies from book 
+   join book_authors on book.book_id = book_authors.book_id join book_copies on book.book_id = book_copies.book_id 
+   join library_branch on book_copies.branch_id = library_branch.branch_id;
+
+2. select title, branch_name, card_no, date_out, due_date from book_lending 
+   join book on book_lending.book_id = book.book_id join library_branch on book_lending.branch_id = library_branch.branch_id 
+   where date_out between '2017-01-01' and '2017-06-30';
+
+3. delete from book where title = 'Databases';
+
+4. select pub_year, count(*) as total_no_of_books from book group by pub_year order by pub_year;
+
+5. create view books as select title, sum(no_of_copies) as copies from book 
+   join book_copies on book.book_id = book_copies.book_id group by book.book_id;
+
+
+2. select * from book_lending where Date_out >= '2017-01-01' and Date_out <= '2017-06-31'
+3. select pub_year,count(*) from book group by pub_year
+5. create view v1 as select book.book_id,title,no_of_copies,branch_id  from book,Book_copies where book.book_id = Book_copies.book_id;
+
+Chit 18:
+1. select distinct address from employee;
+
+2. select max(salary), min(salary) from employee;
+
+3. select * from employee order by salary;
+
+4. select ename from employee where address = 'Nasik' or address = 'Pune';
+
+5. select ename from employee where commission is null;
+
+6. update employee set address = 'Nasik' where ename = 'Amit';
+
+7. select * from employee where ename like 'A%';
+
+8. select count(*) from employee where address = 'Mumbai';
+
+9. select address, count(*) from employee group by address;
+
+10. select distinct address from employee, project where address = addr;
+
+11. select address, min(salary) from employee group by address;
+
+12. select address, max(salary) from employee group by address having max(salary) > 26000;
+
+13. delete from employee where salary > 30000;
+
+
+
+Chit 19:
+1. create table emp(eno int auto_increment primary key, ename varchar(20) not null, address varchar(20) default 'Nashik', joindate date);
+   alter table emp auto_increment = 101;
+
+2. alter table emp add post varchar(20);
+
+3. insert into emp(ename, address, salary, joindate, post) values('Amit', 'Pune', 25000, '2017-05-23', 'HR'), 
+   ('Sneha', 'Pune', 35000, '2018-11-17', 'Manager'), ('Savita', 'Nashik', 28000, '2019-05-21', 'Tech Head'), 
+   ('Pooja', 'Mummbai', 19000, '2020-01-27', 'PR Head'), ('Sagar', 'Mumbai', 25000, '2021-09-12', 'Marketing Head');
+
+   create index emp_name on emp(ename);
+
+4. insert into emp(ename, salary, joindate, post) values('Siddhesh', 21000, '2022-03-27', 'Head');
+
+5. create view emp_data as select ename, salary from emp;
+   select * from emp_data;
+
+Chit 23:
+1. select p.p_name, city from patient p, visit v where date_of_visit = '2017-07-13' and p.p_name = v.p_name;
+
+2. select name, count(*) from physician p, visit v where p.reg_no = v.reg_no group by v.reg_no;
+   select date_of_visit, sum(fee) from visit group by date_of_visit;
+
+3. select v.p_name, street, city from patient p, visit v where p.p_name = v.p_name;
+
+4. create view visitors as select * from visit where date_of_visit between '2021-01-01' and '2022-12-31';
+   select * from visitors;
+
+5. create index patient_name on patient(p_name);
+
+
+Chit 25:
+1. select * from loan order by amount desc, loan_no;
+
+2. N/A
+
+3. select c_name, c_city, street from customer c join depositor d on c.c_no = d.c_no join borrower b on c.c_no = b.c_no 
+   join account a on d.acc_no = a.acc_no join loan l on b.loan_no = l.loan_no where l.amount > (3 * a.balance);
