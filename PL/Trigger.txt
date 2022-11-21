@@ -1,0 +1,17 @@
+CREATE OR REPLACE TRIGGER LIRARY_TRIGGER 
+BEFORE DELETE OR UPDATE ON LIB 
+REFERENCING OLD AS OLD NEW AS NEW 
+for each row 
+BEGIN
+  insert into LIB_AUDIT values(:OLD.book_id,:OLD.no_of_copies);
+END;
+
+
+set serveroutput on;
+
+Declare
+begin
+update LIB set no_of_copies = 100 where book_id = 1;
+
+end; 
+

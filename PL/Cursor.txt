@@ -1,0 +1,27 @@
+set serveroutput on;
+declare
+sal EMPLOYEE.salary % type := &sal;
+begin
+EMPLO(sal);
+end;
+
+CREATE OR REPLACE PROCEDURE EMPLO
+(
+SAL in number
+)AS 
+name EMPLOYEE.name % type;
+  salary EMPLOYEE.salary % type;
+  temp EMPLOYEE % Rowtype;
+Cursor EMPLOYEE_Cursor is select name,salary from EMPLOYEE;
+BEGIN
+  open EMPLOYEE_Cursor;
+  Loop
+   fetch EMPLOYEE_Cursor into name,salary;
+   exit when EMPLOYEE_CURSOR % notfound;
+   
+   if (salary < SAL) then
+   dbms_output.put_line(name || ' ' || salary);
+   end if;
+   end loop;
+  close EMPLOYEE_Cursor;
+END EMPLO;

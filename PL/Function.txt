@@ -1,0 +1,42 @@
+set serveroutput on;
+
+declare 
+rno number ;
+marks number ;
+name varchar(20);
+cnt number;
+grade varchar(20);
+
+begin
+select count(ROLLNO) into cnt  from STUD_MARKS;
+while cnt > 0 LOOP
+    select ROLLNO,TOTAL_MARKS,NAME into rno,marks,name from STUD_MARKS where ROLLNO = cnt;
+    grade := GRADE1(marks) ;
+    Insert into RESULT values (rno,name,grade);
+    cnt := cnt - 1;
+END LOOP;
+
+Exception 
+When no_data_found Then
+dbms_output.put_line('No data found');
+
+
+
+end;
+
+
+create or replace FUNCTION GRADE1
+(marks in number)
+RETURN VARCHAR2 AS 
+BEGIN
+if (marks <= 1500 and marks>= 990) then
+return 'DIS';
+elsif ( marks<= 989 and marks >= 900) then
+return 'FC';
+elsif (marks <= 899 and marks >=825) then
+return 'HSC';
+else
+return 'Fail';
+end if;
+ENDGRADE1; 
+

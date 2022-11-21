@@ -1,0 +1,20 @@
+set serveroutput on;
+
+declare
+rno number := &rno;
+att number;
+begin 
+
+select ATT into att from STUD where ROLLNO = rno;
+if att >= 75 then
+dbms_output.put_line('Term granted');
+update STUD set STATUS = 'ND' where ROLLNO = rno;
+else
+dbms_output.put_line('Term not granted');
+update STUD set STATUS = 'D' where ROLLNO = rno;
+end if;
+
+exception
+when no_data_found then
+dbms_output.put_line('No data found');
+end;

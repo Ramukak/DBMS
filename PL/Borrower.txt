@@ -1,0 +1,31 @@
+set serveroutput on;
+
+declare
+rno number := &rno;
+nob varchar(20) := &nob;
+doi date;
+days number;
+amt number(20,2);
+
+begin
+
+select DATE_OF_ISSUE into doi from BORROWER where ROLL_NO=rno and  NAME_OF_BOOK=nob;
+days := sysdate - doi;
+if days <15 then
+amt:=0;
+elsif days < 30 then
+amt := 5*days;
+elsif days >= 30 then
+amt := 30*days;
+end if;
+
+dbms_output.put_line(amt);
+
+insert into fine values (rno, sysdate,amt);
+update BORROWER set status = 'R' where ROLL_NO = rno and NAME_OF_BOOK=nob;
+
+exception
+when no_data_found then
+    dbms_output.put_line('NO such book or roll no found !');
+
+end;
